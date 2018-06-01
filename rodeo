@@ -1,0 +1,47 @@
+#!/bin/bash
+#Checking if script received parameters
+if [[ $# -eq 0 ]]; then
+	echo "version 0.2"
+	echo "Usage: rodeo -[u|m] [volume1] [volume2] [volume3] [...]"
+	echo "A bash script to batch (un)mount Mac OS X volumes by their names."
+  exit 0
+fi
+
+diskutil=/usr/sbin/diskutil
+
+while getopts ":um" volume; do
+	case ${volume} in
+		u ) # process unmounting
+		for volume in "${@:2}"
+		do
+			echo
+			echo "Finding $volume..."
+			node=`$diskutil info "$volume" | grep Node | awk '{print $NF}'`
+			if [ `$diskutil info "$volume" | grep Mounted | awk '{print $NF}'` = "No" ] ; then
+				echo "Volume $volume on $node already unmounted"
+			else
+				#echo  "SIMULATION : Volume $volume on $node unmounted"
+				$diskutil umount $node
+			fi
+		done
+        ;;
+		m ) # process mounting
+		for volume in "${@:2}"
+		do
+			echo
+			echo "Finding $volume..."
+			node=`$diskutil info "$volume" | grep Node | awk '{print $NF}'`
+			if [ `$diskutil info "$volume" | grep Mounted | awk '{print $NF}'` = "Yes" ] ; then
+				echo "Volume $volume on $node already mounted"
+			else
+				#echo  "SIMULATION : Volume $volume on $node mounted"
+				$diskutil mount $node
+			fi
+		done
+		;;
+		\? ) echo "Usage: rodeo -[u|m] [volume1] [volume2] [volume3] [...]"
+		;;
+		esac
+done
+
+echo
