@@ -3,7 +3,7 @@
 if [[ $# -eq 0 ]]; then
 	echo "version 0.1"
 	echo "Usage: rodeo -[u|m] [volume1] [volume2] [volume3] [...]"
-	echo "A bash script to batch (un)mount Mac OS X volumes by their names."
+	echo "A bash script to batch (un)mount MacOS volumes by their names."
   exit 0
 fi
 
